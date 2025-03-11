@@ -45,12 +45,16 @@ export const saveFilesToServer = async (
 
 	return savedFilePaths;
 };
-
-export type DirectoryElement = {
+export interface DirectoryElement {
 	title: string;
 	path: string;
 	isDirectory: boolean;
-};
+	metadata: {
+		size?: number; // Размер файла в байтах
+		createdAt?: Date; // Дата создания
+		modifiedAt?: Date; // Дата последнего изменения
+	};
+}
 
 export const getDirectoryByPath = async (
 	dirPath: string,
@@ -70,13 +74,25 @@ export const getDirectoryByPath = async (
 		for (const file of files) {
 			const fullPath = path.join(dirPath, file.name);
 
+			// Получаем метаданные о файле или директории
+			const stats = await pfs.stat(fullPath);
+
 			if (file.isDirectory()) {
 				if (includeDirectories) {
-					result.push({ title: file.name, path: fullPath, isDirectory: true });
+					result.push({
+						title: file.name,
+						path: fullPath,
+						isDirectory: true,
+						metadata: {
+							size: stats.size, // Размер директории (обычно 0 или размер метаданных)
+							createdAt: stats.birthtime, // Дата создания
+							modifiedAt: stats.mtime, // Дата последнего изменения
+						},
+					});
 				}
 
 				if (recursive) {
-					const nestedFiles: any = await getDirectoryByPath(
+					const nestedFiles = await getDirectoryByPath(
 						fullPath,
 						recursive,
 						includeFiles,
@@ -85,7 +101,16 @@ export const getDirectoryByPath = async (
 					result.push(...nestedFiles);
 				}
 			} else if (file.isFile() && includeFiles) {
-				result.push({ title: file.name, path: fullPath, isDirectory: false });
+				result.push({
+					title: file.name,
+					path: fullPath,
+					isDirectory: false,
+					metadata: {
+						size: stats.size, // Размер файла
+						createdAt: stats.birthtime, // Дата создания
+						modifiedAt: stats.mtime, // Дата последнего изменения
+					},
+				});
 			}
 			// Можно добавить обработку символических ссылок, если нужно
 		}

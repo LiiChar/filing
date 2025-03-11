@@ -157,10 +157,37 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+	* {
+		@apply border-border outline-ring/50;
 	}
-  body {
-    @apply bg-background text-foreground;
+	body {
+		@apply bg-background text-foreground;
 	}
+}
+
+.ant-upload-wrapper > div:hover {
+	border-color: var(--accent) !important;
+}
+
+svg {
+	stroke: var(--foreground);
+}
+
+::-webkit-scrollbar {
+	background: transparent;
+	width: 6px;
+	height: 3px;
+}
+
+@media (max-width: 600) {
+	::-webkit-scrollbar {
+		width: 4px;
+	}
+}
+
+::-webkit-scrollbar-button {
+	display: none;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--foreground);
 }

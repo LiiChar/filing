@@ -2,9 +2,14 @@
 
 import { TreeViewElement } from '@/components/ui/tree-view-api';
 import { compressImage } from '@/lib/image';
-import { getDirectoryByPath, saveFilesToServer } from '@/shared/helper/file';
+import {
+	DirectoryElement,
+	getDirectoryByPath,
+	saveFilesToServer,
+} from '@/shared/helper/file';
 import { User } from '@/shared/type/user';
 import { promises as fs } from 'fs';
+import { getFormattedDate } from '../helper/date';
 
 export const handleFileUpload = async (formData: FormData) => {
 	const files = formData.getAll('files') as File[];
@@ -75,6 +80,7 @@ export const getFilesByPath = async (uploadPath: string) => {
 						id: p.path,
 						name: p.title,
 						isSelectable: false,
+						metadata: p.metadata,
 					});
 				} else {
 					// Если это не последний сегмент, ищем или создаем директорию
@@ -127,7 +133,7 @@ export const handleCompressImage = async (formData: FormData) => {
 		// Сохраняем файлы на сервере
 		const savedFilePaths = await saveFilesToServer(
 			files,
-			'/public/upload/' + user!.id,
+			`/public/upload/${user!.id}/optimaze/${getFormattedDate('d-m-y')}/`,
 			(buffer: Buffer, path: string) => compressImage(buffer, path)
 		);
 

@@ -14,12 +14,14 @@ import React, {
 	useState,
 } from 'react';
 import { Button } from '@/components/ui/button';
+import { DirectoryElement } from '@/shared/helper/file';
 
 type TreeViewElement = {
 	id: string;
 	name: string;
 	isSelectable?: boolean;
 	children?: TreeViewElement[];
+	metadata?: DirectoryElement['metadata'];
 };
 
 type TreeContextProps = {

@@ -1,6 +1,6 @@
 'use client';
 
-import { FileUploader } from '@/components/FileUpload';
+import { FileUploader } from '@/components/file/FileUpload';
 import { getUser } from '@/shared/helper/user';
 import { handleFileUpload } from '@/shared/actions/file';
 import { Button } from 'antd';
@@ -44,7 +44,7 @@ export const FileUploadBlock = ({
 
 	return (
 		<section>
-			{title && <h1 className='text-4xl font-bold pb-24'>{title}</h1>}
+			{title && <p className='text-2xl text-center font-bold pb-2'>{title}</p>}
 			<form action={handleSubmit}>
 				<FileUploader allowExt={allowExt} onFilesChange={setFiles} />
 				<Button className='mt-2' htmlType='submit'>

@@ -17,6 +17,7 @@ import {
 } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { FileExtensions } from '@/shared/type/file';
+import { getExtFile } from '@/shared/helper/file';
 
 const { Dragger } = Upload;
 
@@ -113,7 +114,7 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 	};
 
 	return (
-		<div className='p-4'>
+		<div className=''>
 			<Dragger
 				name='files'
 				multiple
@@ -124,14 +125,17 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 				className=' rounded-lg p-6 text-center  transition-colors'
 			>
 				{files.length > 0 ? (
-					<div className='flex flex-wrap gap-4 mb-4'>
+					<div className='flex flex-wrap gap-4'>
 						{files.map((file, index) => (
 							<div
 								key={index}
 								className='w-24 h-24 flex flex-col items-center justify-center  rounded-lg p-2 relative'
 							>
 								{file.status === 'uploading' ? (
-									<Spin size='small' />
+									<Spin
+										className='fill:foreground text-3xl stroke:foreground text-blue-500'
+										size='small'
+									/>
 								) : (
 									<>
 										{file.type.startsWith('image/') ? (
@@ -160,8 +164,10 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 										)}
 									</>
 								)}
-								<span className='absolute bottom-1 right-1 text-xs text-gray-500'>
-									{file.type.split('/')[1] || file.type}
+								<span className='absolute bottom-2 right-3 invert text-xs text-foreground'>
+									{file.type.split('/')[1] ||
+										file.type ||
+										file.name.split('.')[file.name.split('.').length - 1]}
 								</span>
 							</div>
 						))}
@@ -169,7 +175,7 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 				) : (
 					<>
 						<p className='ant-upload-drag-icon'>
-							<InboxOutlined className='text-3xl text-blue-500' />
+							<InboxOutlined className='fill:foreground text-3xl stroke:foreground text-blue-500' />
 						</p>
 						<p className='ant-upload-text text-lg font-semibold'>
 							Перетащите файлы сюда или нажмите для выбора

@@ -1,16 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FileIcon } from './ui/file-icon';
+import { FileIcon } from '../ui/file-icon';
 import {
 	CollapseButton,
 	File,
 	Folder,
 	Tree,
 	TreeViewElement,
-} from './ui/tree-view-api';
+} from '../ui/tree-view-api';
 import { useListener } from '@/shared/store/useListener';
 import { getFilesByPath } from '@/shared/actions/file';
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from '@/components/ui/hover-card';
+import { Player } from './Player';
+import { getSrc } from '@/shared/helper/url';
+import { getFormattedDate } from '@/shared/helper/date';
+import { formatFileSize } from '@/shared/helper/text';
 
 type FileDir = Record<string, (string | Record<string, any>)[]>;
 
@@ -56,7 +65,6 @@ export const FileManager = ({ dir, path }: FileManagerProps) => {
 		const callback = async () => {
 			try {
 				const files = await getFilesByPath(path);
-				console.log(files);
 				if (files) {
 					setElements(files);
 				}
@@ -72,7 +80,12 @@ export const FileManager = ({ dir, path }: FileManagerProps) => {
 	}, []);
 
 	return (
-		<Tree className=' h-full' initialSelectedId={dir[0].id} elements={elements}>
+		<Tree
+			className=' h-full'
+			aria-multiselectable='true'
+			initialSelectedId={dir[0].id}
+			elements={elements}
+		>
 			{elements.map(el => (
 				<ShowDirectory key={el.id + el.name} dir={el} />
 			))}
@@ -92,10 +105,44 @@ export const ShowDirectory = ({ dir }: { dir: TreeViewElement }) => {
 				</Folder>
 			) : (
 				<File
-					fileIcon={<FileIcon className='h-4 w-4' fileName={dir.name.trim()} />}
+					fileIcon={
+						<FileIcon
+							className='min-w-4 max-w-4 h-4 w-4'
+							fileName={dir.name.trim()}
+						/>
+					}
 					value={dir.id}
+					className='w-full'
 				>
-					<div className='line-clamp-1 text-left'>{dir.name.trim()}</div>
+					<HoverCard>
+						<HoverCardTrigger>
+							<div className='line-clamp-1 text-left overflow-ellipsis'>
+								{dir.name.trim()}
+							</div>
+						</HoverCardTrigger>
+						<HoverCardContent>
+							<div className='text-left'>
+								<div>
+									<Player
+										alt={dir.name.trim()}
+										className='w-full'
+										controls
+										src={getSrc(dir.id)}
+									/>
+								</div>
+								<div>{dir.name.trim()}</div>
+								{dir.metadata && dir.metadata.size && (
+									<div>Размер: {formatFileSize(dir.metadata.size)}</div>
+								)}
+								{dir.metadata && dir.metadata.createdAt && (
+									<div>
+										Дата создания:{' '}
+										{getFormattedDate('h:i d-m-y', dir.metadata.createdAt)}
+									</div>
+								)}
+							</div>
+						</HoverCardContent>
+					</HoverCard>
 				</File>
 			)}
 		</>
