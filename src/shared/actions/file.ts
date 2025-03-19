@@ -10,6 +10,7 @@ import {
 import { User } from '@/shared/type/user';
 import { promises as fs } from 'fs';
 import { getFormattedDate } from '../helper/date';
+import { FILE_PATH, OPTIMAZE_PATH } from '../const/url';
 
 export const handleFileUpload = async (formData: FormData) => {
 	const files = formData.getAll('files') as File[];
@@ -38,8 +39,12 @@ export const handleFileUpload = async (formData: FormData) => {
 	}
 };
 
-export const getFilesByPath = async (uploadPath: string) => {
+export const getFilesByPath = async (
+	uploadPath: string,
+	options?: { sort?: 'default' | 'asc' }
+) => {
 	if (!uploadPath) return null;
+	const { sort = 'default' } = options ?? {};
 	const startPath = uploadPath.split('/')[uploadPath.split('/').length - 1];
 
 	let files: TreeViewElement[] = [
@@ -109,6 +114,14 @@ export const getFilesByPath = async (uploadPath: string) => {
 				}
 			});
 		});
+
+		if (sort) {
+			if (sort == 'default') {
+				files[0].children = files[0].children?.sort(
+					(a, b) => (b.children?.length ?? 0) - (a.children?.length ?? 0)
+				);
+			}
+		}
 		return files;
 	} catch (err) {
 		console.log(err);
@@ -133,7 +146,9 @@ export const handleCompressImage = async (formData: FormData) => {
 		// Сохраняем файлы на сервере
 		const savedFilePaths = await saveFilesToServer(
 			files,
-			`/public/upload/${user!.id}/optimaze/${getFormattedDate('d-m-y')}/`,
+			`/${FILE_PATH}/${user!.id}/${OPTIMAZE_PATH}/${getFormattedDate(
+				'd-m-y'
+			)}/`,
 			(buffer: Buffer, path: string) => compressImage(buffer, path)
 		);
 

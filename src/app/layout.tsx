@@ -11,7 +11,7 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { FileManage } from '@/widget/file/FileManagerAside';
+import { FileManagerAside } from '@/widget/file/FileManagerAside';
 import { Footer } from '@/widget/layout/Footer';
 import { Header } from '@/widget/layout/Header';
 
@@ -46,10 +46,10 @@ export default async function RootLayout({
 				<AntdRegistry>
 					<ConfigProvider theme={antTheme}>
 						<SidebarProvider>
-							<FileManage />
+							<FileManagerAside />
 							<main className='w-full'>
 								<Header />
-								<SidebarTrigger className='translate-x-[12.5px]' />
+								<SidebarTrigger className='translate-x-[12.5px] z-50 sticky top-12' />
 								<SidebarInset>{children}</SidebarInset>
 								<Footer />
 							</main>

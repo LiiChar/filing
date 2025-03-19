@@ -3,7 +3,6 @@
 import React, { useCallback, useState } from 'react';
 import { Upload, message, Spin } from 'antd';
 import {
-	InboxOutlined,
 	FileImageOutlined,
 	FilePdfOutlined,
 	FileWordOutlined,
@@ -18,6 +17,7 @@ import {
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { FileExtensions } from '@/shared/type/file';
 import { getExtFile } from '@/shared/helper/file';
+import { Inbox, Loader2 } from 'lucide-react';
 
 const { Dragger } = Upload;
 
@@ -114,7 +114,7 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 	};
 
 	return (
-		<div className=''>
+		<div className='w-full h-full'>
 			<Dragger
 				name='files'
 				multiple
@@ -122,7 +122,7 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 				onChange={handleChange}
 				showUploadList={false}
 				accept={allowExt ? allowExt.map(e => `.${e}`).join(' ,') : '*'}
-				className=' rounded-lg p-6 text-center  transition-colors'
+				className='w-full h-full rounded-lg p-6 text-center  transition-colors'
 			>
 				{files.length > 0 ? (
 					<div className='flex flex-wrap gap-4'>
@@ -132,10 +132,7 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 								className='w-24 h-24 flex flex-col items-center justify-center  rounded-lg p-2 relative'
 							>
 								{file.status === 'uploading' ? (
-									<Spin
-										className='fill:foreground text-3xl stroke:foreground text-blue-500'
-										size='small'
-									/>
+									<Loader2 className='fill:foreground animate-spin text-3xl stroke:foreground text-blue-500' />
 								) : (
 									<>
 										{file.type.startsWith('image/') ? (
@@ -174,9 +171,9 @@ export const FileUploader = ({ onFilesChange, allowExt }: FileUploadProps) => {
 					</div>
 				) : (
 					<>
-						<p className='ant-upload-drag-icon'>
-							<InboxOutlined className='fill:foreground text-3xl stroke:foreground text-blue-500' />
-						</p>
+						<div className='w-full'>
+							<Inbox className='w-20 h-20 mx-auto fill:foreground text-3xl stroke:foreground text-blue-500' />
+						</div>
 						<p className='ant-upload-text text-lg font-semibold'>
 							Перетащите файлы сюда или нажмите для выбора
 						</p>

@@ -11,15 +11,8 @@ import {
 } from '../ui/tree-view-api';
 import { useListener } from '@/shared/store/useListener';
 import { getFilesByPath } from '@/shared/actions/file';
-import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from '@/components/ui/hover-card';
-import { Player } from './Player';
-import { getSrc } from '@/shared/helper/url';
-import { getFormattedDate } from '@/shared/helper/date';
-import { formatFileSize } from '@/shared/helper/text';
+import { FileElement } from './FileElement';
+import { treeViewFileToDirectory } from '@/shared/helper/convert';
 
 type FileDir = Record<string, (string | Record<string, any>)[]>;
 
@@ -61,18 +54,18 @@ export const FileManager = ({ dir, path }: FileManagerProps) => {
 	const [elements, setElements] = useState<TreeViewElement[]>(dir);
 	const { addListener, removeListener } = useListener();
 
-	useEffect(() => {
-		const callback = async () => {
-			try {
-				const files = await getFilesByPath(path);
-				if (files) {
-					setElements(files);
-				}
-			} catch (error) {
-				console.error('Ошибка при получении файлов:', error);
+	const callback = async () => {
+		try {
+			const files = await getFilesByPath(path);
+			if (files) {
+				setElements(files);
 			}
-		};
+		} catch (error) {
+			console.error('Ошибка при получении файлов:', error);
+		}
+	};
 
+	useEffect(() => {
 		addListener('updateFileManager', callback);
 		return () => {
 			removeListener('updateFileManager', callback);
@@ -80,17 +73,19 @@ export const FileManager = ({ dir, path }: FileManagerProps) => {
 	}, []);
 
 	return (
-		<Tree
-			className=' h-full'
-			aria-multiselectable='true'
-			initialSelectedId={dir[0].id}
-			elements={elements}
-		>
-			{elements.map(el => (
-				<ShowDirectory key={el.id + el.name} dir={el} />
-			))}
-			<CollapseButton elements={elements} />
-		</Tree>
+		<>
+			<Tree
+				className=' h-full'
+				aria-multiselectable='true'
+				initialSelectedId={dir[0].id}
+				elements={elements}
+			>
+				{elements.map(el => (
+					<ShowDirectory key={el.id + el.name} dir={el} />
+				))}
+				<CollapseButton elements={elements} />
+			</Tree>
+		</>
 	);
 };
 
@@ -114,35 +109,7 @@ export const ShowDirectory = ({ dir }: { dir: TreeViewElement }) => {
 					value={dir.id}
 					className='w-full'
 				>
-					<HoverCard>
-						<HoverCardTrigger>
-							<div className='line-clamp-1 text-left overflow-ellipsis'>
-								{dir.name.trim()}
-							</div>
-						</HoverCardTrigger>
-						<HoverCardContent>
-							<div className='text-left'>
-								<div>
-									<Player
-										alt={dir.name.trim()}
-										className='w-full'
-										controls
-										src={getSrc(dir.id)}
-									/>
-								</div>
-								<div>{dir.name.trim()}</div>
-								{dir.metadata && dir.metadata.size && (
-									<div>Размер: {formatFileSize(dir.metadata.size)}</div>
-								)}
-								{dir.metadata && dir.metadata.createdAt && (
-									<div>
-										Дата создания:{' '}
-										{getFormattedDate('h:i d-m-y', dir.metadata.createdAt)}
-									</div>
-								)}
-							</div>
-						</HoverCardContent>
-					</HoverCard>
+					<FileElement file={treeViewFileToDirectory(dir)} variant='compact' />
 				</File>
 			)}
 		</>

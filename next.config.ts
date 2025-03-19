@@ -6,8 +6,16 @@ const nextConfig: NextConfig = {
 	},
 	experimental: {
 		serverActions: {
-			bodySizeLimit: '10mb',
+			bodySizeLimit: '500mb',
 		},
+	},
+	webpack: (config, { dev }) => {
+		if (dev) {
+			config.watchOptions = {
+				ignored: /\/public\//,
+			};
+		}
+		return config;
 	},
 };
 

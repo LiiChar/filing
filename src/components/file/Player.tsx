@@ -3,6 +3,7 @@ import React from 'react';
 // Создаем объединенный тип для свойств
 type PlayerProps = {
 	src?: string;
+	type?: 'audio' | 'image' | 'video' | 'unknown';
 } & (
 	| React.ComponentProps<'img'>
 	| React.ComponentProps<'video'>
@@ -35,8 +36,8 @@ function getFileTypeByUrl(
 	}
 }
 
-export const Player = ({ src, ...props }: PlayerProps) => {
-	const typeFile = getFileTypeByUrl(src ?? '');
+export const Player = ({ src, type, ...props }: PlayerProps) => {
+	const typeFile = type || getFileTypeByUrl(src ?? '');
 
 	return (
 		<>
@@ -47,7 +48,10 @@ export const Player = ({ src, ...props }: PlayerProps) => {
 			) : typeFile === 'audio' ? (
 				<audio src={src} {...(props as React.ComponentProps<'audio'>)} />
 			) : (
-				<></>
+				<iframe
+					src={src}
+					{...(props as React.ComponentProps<'iframe'>)}
+				></iframe>
 			)}
 		</>
 	);

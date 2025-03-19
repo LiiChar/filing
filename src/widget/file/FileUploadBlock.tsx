@@ -4,9 +4,10 @@ import { FileUploader } from '@/components/file/FileUpload';
 import { getUser } from '@/shared/helper/user';
 import { handleFileUpload } from '@/shared/actions/file';
 import { Button } from 'antd';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FileExtensions } from '@/shared/type/file';
 import { useListener } from '@/shared/store/useListener';
+import { FileList } from '@/components/file/FileList';
 
 export type FileUploadBlockProps = {
 	allowExt?: FileExtensions[];
@@ -43,7 +44,7 @@ export const FileUploadBlock = ({
 	};
 
 	return (
-		<section>
+		<section className='w-full'>
 			{title && <p className='text-2xl text-center font-bold pb-2'>{title}</p>}
 			<form action={handleSubmit}>
 				<FileUploader allowExt={allowExt} onFilesChange={setFiles} />

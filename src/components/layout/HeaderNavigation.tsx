@@ -37,6 +37,31 @@ export const HeaderNavigation = () => {
 							<NavigationMenuLink>Link</NavigationMenuLink>
 						</NavigationMenuContent>
 					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<NavigationMenuTrigger>Текст</NavigationMenuTrigger>
+						<NavigationMenuContent>
+							<Link href='/text/tts' legacyBehavior passHref>
+								<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+									Текст в речь
+								</NavigationMenuLink>
+							</Link>
+							<Link href='/text/stt' legacyBehavior passHref>
+								<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+									Речь в текст
+								</NavigationMenuLink>
+							</Link>
+							<Link href='/text/image' legacyBehavior passHref>
+								<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+									Текст с изображения
+								</NavigationMenuLink>
+							</Link>
+							<Link href='/text/vrez' legacyBehavior passHref>
+								<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+									Текст во врезку
+								</NavigationMenuLink>
+							</Link>
+						</NavigationMenuContent>
+					</NavigationMenuItem>
 				</NavigationMenuList>
 			</NavigationMenu>
 		</div>

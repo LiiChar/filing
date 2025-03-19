@@ -173,6 +173,14 @@ svg {
 	stroke: var(--foreground);
 }
 
+svg g {
+	stroke: var(--foreground);
+}
+
+svg path {
+	stroke: var(--foreground);
+}
+
 ::-webkit-scrollbar {
 	background: transparent;
 	width: 6px;
